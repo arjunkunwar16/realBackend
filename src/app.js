@@ -16,4 +16,16 @@ app.use(express.static('public'));
 
 app.use(cookieParser());
 
+// routes import
+import userRouter from './routes/user.routes.js';
+
+// app.get("/" , (req, res) => {
+//     res.send("Welcome to the app");
+// })
+
+// routes declaration
+app.use("/api/v1/users", userRouter);
+// http://localhost:8000/api/v1/users/register
+
+
 export { app };
