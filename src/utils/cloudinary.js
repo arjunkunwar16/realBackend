@@ -1,7 +1,6 @@
 import {v2 as cloudinary} from "cloudinary";
 import fs from "fs";
 
-import { v2 as cloudinary } from 'cloudinary';
     // Configuration
   
 cloudinary.config({ 
@@ -19,6 +18,8 @@ const uploadToCloudinary = async (localFilePath) => {
         })
 
         console.log("File uploaded to Cloudinary" , response.url)
+        fs.unlinkSync(localFilePath) // remove the locally saved file
+
         return response
     }catch(error){
         fs.unlinkSync(localFilePath) // remove the locally saved file

@@ -19,7 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
     // return response
 
     const {fullName , email , password, username} = req.body;
-    console.log(fullName);
+    // console.log(fullName);
 
     if(!fullName || !email || !password || !username){
         // res.status(400);
@@ -28,7 +28,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     // User.findOne({email: email})
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or: [
             {email},
             {username}
@@ -40,7 +40,12 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverLocalPath = req.files?.cover[0]?.path;
+    // const coverLocalPath = req.files?.cover[0]?.path;
+
+    let coverLocalPath;
+    if(req.files && Array.isArray(req.files.cover) && req.files.cover.length > 0){
+        coverLocalPath = req.files.cover[0].path;
+    }
 
     if(!avatarLocalPath){
         throw new ApiError(400, "Please upload an avatar");
@@ -82,3 +87,55 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
 export { registerUser };
+
+// import { asyncHandler } from "../utils/asyncHandler.js";
+// import { ApiError } from "../utils/ApiError.js";
+// import { User } from "../models/user.model.js";
+// import { uploadToCloudinary } from "../utils/cloudinary.js";
+// import { ApiResponse } from "../utils/ApiResponse.js";
+
+// const registerUser = asyncHandler(async (req, res) => {
+//     const { email, username } = req.body;
+
+//     if (!email || !username) {
+//         throw new ApiError(400, "Please fill all the fields");
+//     }
+
+//     const existedUser = await User.findOne({
+//         $or: [
+//             { email },
+//             { username }
+//         ]
+//     });
+
+//     if (existedUser) {
+//         throw new ApiError(409, "User already exists");
+//     }
+
+//     let avatarUrl = null;
+//     let coverUrl = null;
+
+//     if (req.files) {
+//         if (req.files.avatar) {
+//             const avatarResult = await uploadToCloudinary(req.files.avatar[0].path);
+//             avatarUrl = avatarResult.secure_url;
+//         }
+//         if (req.files.cover) {
+//             const coverResult = await uploadToCloudinary(req.files.cover[0].path);
+//             coverUrl = coverResult.secure_url;
+//         }
+//     }
+
+//     const newUser = new User({
+//         email,
+//         username,
+//         avatar: avatarUrl,
+//         cover: coverUrl
+//     });
+
+//     await newUser.save();
+
+//     res.status(201).json(new ApiResponse(201, "User registered successfully", newUser));
+// });
+
+// export { registerUser };
