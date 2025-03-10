@@ -254,7 +254,7 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
         throw new ApiError(400, "Please provide full name and email");
     }
 
-    User.findByIdAndUpdate(req.user._id, {
+    const user = await User.findByIdAndUpdate(req.user._id, {
         $set: {
             fullName,
             email
@@ -264,7 +264,7 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
     }
     ).select("-password -refreshToken");
 
-    return res.status(200).json(new ApiResponse(200, null, "Account details updated successfully"));
+    return res.status(200).json(new ApiResponse(200, user, "Account details updated successfully"));
 })
 
 const updateUserAvatar = asyncHandler(async(req, res) => {
@@ -281,7 +281,7 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         throw new ApiError(500, "Avatar upload failed");
     }
 
-    const user = User.findByIdAndUpdate(req.user._id, {
+    const user = await User.findByIdAndUpdate(req.user._id, {
         $set: {
             avatar: avatar.url
         }
@@ -307,7 +307,7 @@ const updateUserCover = asyncHandler(async(req, res) => {
             throw new ApiError(500, "Cover upload failed");
         }
     
-        const user = User.findByIdAndUpdate(req.user._id, {
+        const user = await User.findByIdAndUpdate(req.user._id, {
             $set: {
                 cover: cover.url
             }
