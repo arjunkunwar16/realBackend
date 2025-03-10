@@ -280,13 +280,15 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         throw new ApiError(500, "Avatar upload failed");
     }
 
-    User.findByIdAndUpdate(req.user._id, {
+    const user = User.findByIdAndUpdate(req.user._id, {
         $set: {
             avatar: avatar.url
         }
     }, {
         new: true
     }.select("-password -refreshToken"));
+
+    return res.status(200).json(new ApiResponse(200, user, "Avatar updated successfully"));
 
 })
 
@@ -304,13 +306,15 @@ const updateUserCover = asyncHandler(async(req, res) => {
             throw new ApiError(500, "Cover upload failed");
         }
     
-        User.findByIdAndUpdate(req.user._id, {
+        const user = User.findByIdAndUpdate(req.user._id, {
             $set: {
                 cover: cover.url
             }
         }, {
             new: true
         }.select("-password -refreshToken"));
+
+        return res.status(200).json(new ApiResponse(200, user, "Cover updated successfully"));
     
 })
 
